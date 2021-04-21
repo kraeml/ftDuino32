@@ -29,4 +29,4 @@ repl:
 ftduino32-app:
 	@docker-compose run --rm app /bin/bash -l scripts/ftduino32-setup
 
-ftduino32: compile-and-flash-esp32-firmware ftduino32-app
+ftduino32: erase-esp32-flash compile-and-flash-esp32-firmware ftduino32-app
