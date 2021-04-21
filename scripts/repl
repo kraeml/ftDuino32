@@ -1,0 +1,3 @@
+#!/bin/bash
+screen $DEVICE_PORT 115200
+# screen /dev/ttyUSB1 115200

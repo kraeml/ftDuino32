@@ -1,0 +1,17 @@
+
+# Fail on first non-zreo exit code
+set -e
+cd /app/ftduino32/firmware
+for f in *
+do
+  echo "Putting: $f";
+  ampy put $f
+done
+cd ../html
+./install.sh
+cd ..
+ampy put apps
+echo Resetting the device
+# The reset command fails with on timeout even though the reset occurs, so do
+# an || true to ignore it.
+ampy reset --hard > /dev/null 2>&1 || true

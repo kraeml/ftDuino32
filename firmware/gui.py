@@ -76,14 +76,14 @@ class Gui:
         # Initialize ILI9341 display
         from ili9XXX import ili9341
  
-        self.disp = ili9341(miso=19, mosi=23, clk=18, cs=5, dc=32, rst=27, spihost=1, power=-1, backlight=33, backlight_on=1, mhz=80, factor=4, double_buffer=True, hybrid=True, asynchronous=True, initialize=True)
+        self.disp = ili9341(miso=19, mosi=23, clk=18, cs=5, dc=32, rst=27, spihost=1, power=-1, backlight=33, backlight_on=1, mhz=40, factor=4, double_buffer=True, hybrid=True, asynchronous=True, initialize=True)
 
-        self.disp.send_cmd(0x21);
+        # self.disp.send_cmd(0x21);
 
         # Register xpt2046 touch driver
         from xpt2046 import xpt2046
 
-        self.touch = xpt2046(cs=26, spihost=1, mhz=5, max_cmds=16, cal_x0 = 242, cal_y0 = 423-300, cal_x1 = 3783, cal_y1 = 3948-300, transpose = True, samples = 3)
+        self.touch = xpt2046(cs=26, spihost=1, mhz=5, max_cmds=16, cal_x0 = 3782, cal_y0 = 423-300, cal_x1 = 242, cal_y1 = 3948-300, transpose = True, samples = 3)
 
     def __init__(self, screen):
         

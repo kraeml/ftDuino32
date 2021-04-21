@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+  app:
+    build: .
+    image: micropython-docker
+    volumes:
+      - ./devicefs:/app/devicefs
+      - ./scripts:/app/scripts
+      - ./html:/app/ftduino32/html
+      - ./firmware:/app/ftduino32/firmware
+      - ./apps:/app/ftduino32/apps
+    stdin_open: true
+    tty: true
