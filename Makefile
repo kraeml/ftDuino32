@@ -11,12 +11,13 @@ erase-esp32-flash:
 	@docker-compose run --rm app /bin/bash -l /app/scripts/erase-esp32-flash
 
 
-flash-esp32-firmware:
+flash-esp32-firmware: erase-esp32-flash
 	@docker-compose run --rm app /bin/bash -l scripts/flash-esp32-firmware
 
+compile-and-flash-esp32-firmware: compile-esp32-firmware flash-esp32-firmware
 
-compile-and-flash-esp32-firmware:
-	@docker-compose run --rm app /bin/bash -l scripts/compile-and-flash-esp32-firmware
+compile-esp32-firmware:
+	@docker-compose run --rm app /bin/bash -l scripts/compile-esp32-firmware
 
 
 configure-device:

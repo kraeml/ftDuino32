@@ -10,5 +10,6 @@ services:
       - ./html:/app/ftduino32/html
       - ./firmware:/app/ftduino32/firmware
       - ./apps:/app/ftduino32/apps
+      - ./esp32/build-GENERIC_SPIRAM/:/app/esp32/build
     stdin_open: true
     tty: true

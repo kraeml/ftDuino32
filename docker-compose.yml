@@ -6,4 +6,4 @@ services:
       file: docker-compose-no-device.yml
       service: app
     devices:
-      - /dev/ttyUSB1:/dev/ttyUSB0
+      - /dev/ttyUSB0:/dev/ttyUSB0

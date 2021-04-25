@@ -111,6 +111,7 @@ class Page_WiFi:
         # enable wlan
         self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(True)
+        self.wlan.config(dhcp_hostname="ftduino32")
         
         # check if there is info about a last successfully
         # used network
