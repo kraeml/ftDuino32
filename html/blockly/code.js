@@ -1,8 +1,5 @@
 // code.js
 
-// TODO:
-// - fix ftduino address if set address is not used
-
 "use strict";
 
 var Code = {};
@@ -47,7 +44,60 @@ var customBlocks = [
 	"nextStatement": null,
 	"colour": Code.color_misc
     },
-	
+
+    {
+	"type": "mqtt_connect",
+	"message0": "MQTT connect %1",
+	"args0": [ {
+	    "type": "field_input",
+	    "name": "NAME",
+	    "text": "mqtt_server"
+	} ],
+	"output": "Boolean",
+	"colour": Code.color_misc
+    }, {
+	"type": "mqtt_disconnect",
+	"message0": "MQTT disconnect",
+	"previousStatement": null,
+	"nextStatement": null,
+	"colour": Code.color_misc
+    }, {
+	"type": "mqtt_publish",
+	"message0": "MQTT publish %1 %2",
+	"args0": [ {
+	    "type": "field_input",
+	    "name": "TOPIC",
+	    "text": "topic"
+	}, {
+	    "type": "input_value",
+	    "name": "MESSAGE",
+	    "check": "String"
+	} ],
+	"previousStatement": null,
+	"nextStatement": null,
+	"colour": Code.color_misc
+    }, {
+	"type": "mqtt_subscribe",
+	"message0": "MQTT subscribe %1 %2 on %3 %4",
+	"args0": [ {
+	    "type": "field_input",
+	    "name": "TOPIC",
+	    "text": "topic"
+	}, {
+	    "type": "input_dummy"
+	}, {
+	    "type": "field_variable",
+	    "name": "MESSAGE",
+	    "variable": "message"
+	}, {
+	    "type": "input_statement",
+	    "name": "STATEMENTS"
+	} ],
+	"previousStatement": null,
+	"nextStatement": null,
+	"colour": Code.color_misc
+    },
+    
     // --------------- LLVGL ---------------
     {
 	"type": "llvgl_window_set_title",
@@ -92,6 +142,7 @@ var customBlocks = [
 		[ "Button",   "TYPE.BUTTON"   ],
 		[ "Switch",   "TYPE.SWITCH"   ],
 		[ "Checkbox", "TYPE.CHECKBOX" ],
+		[ "Dropdown", "TYPE.DROPDOWN" ],
 		[ "Slider",   "TYPE.SLIDER"   ],
 		[ "LED",      "TYPE.LED"      ],
 		[ "Gauge",    "TYPE.GAUGE"    ],
@@ -171,7 +222,7 @@ var customBlocks = [
 	"colour": Code.color_llvgl
     }, {
 	"type": "llvgl_align",
-	"message0": "align %1 %2 %3",
+	"message0": "place %1 %2 with offset %3",
 	"args0": [ {
 	    "type": "field_variable",
 	    "name": "object",
@@ -193,6 +244,33 @@ var customBlocks = [
 	    "type": "input_value",
 	    "name": "COORDINATE",
 	    "check": "Array"
+	} ],
+	"previousStatement": null,
+	"nextStatement": null,
+	"colour": Code.color_llvgl
+    }, {
+	"type": "llvgl_align_to",
+	"message0": "place %1 %2 %3 with offset %4",
+	"args0": [ {
+	    "type": "field_variable",
+	    "name": "OBJECT",
+	    "variable": "object"
+	}, {
+	    "type": "field_dropdown",
+	    "name": "ALIGN",
+	    "options": [ [ "above",       "ALIGN.ABOVE"    ],
+			 [ "below",       "ALIGN.BELOW"    ],
+			 [ "left of",     "ALIGN.LEFT_OF"  ],
+			 [ "right of",    "ALIGN.RIGHT_OF" ]
+		       ]
+	}, {
+	    "type": "field_variable",
+	    "name": "OTHER",
+	    "variable": "other"
+	}, {
+	    "type": "input_value",
+	    "name": "COORDINATE",
+	    "check": "Number"
 	} ],
 	"previousStatement": null,
 	"nextStatement": null,
@@ -252,6 +330,16 @@ var customBlocks = [
 	} ],
 	"previousStatement": null,
 	"nextStatement": null,
+	"colour": Code.color_llvgl
+    }, {
+	"type": "llvgl_on_window_close",
+	"message0": "on window close %1 %2",
+	"args0": [ {
+	    "type": "input_dummy"
+	}, {
+	    "type": "input_statement",
+	    "name": "STATEMENTS"
+	} ],
 	"colour": Code.color_llvgl
     },
     
@@ -649,6 +737,60 @@ var customBlocks = [
         } ],
 	"output": "Number",
 	"colour": Code.color_ftduino
+    }, {
+	"type": "i2c_write",
+	"message0": "I²C write A:%1 R:%2 %3 %4",
+	"args0": [ {
+	    "type": "field_number",
+	    "name": "ADDR",
+	    "value": 42
+	}, {
+	    "type": "field_number",
+	    "name": "REG",
+	    "value": 0
+	}, {
+	    "type": "field_dropdown",
+	    "name": "TYPE",
+	    "options": [ [ "byte",               "ftduino.I2C_TYPE.BYTE"    ],
+			 [ "16 bit (lsb first)", "ftduino.I2C_TYPE.INT16LE" ],
+			 [ "32 bit (lsb first)", "ftduino.I2C_TYPE.INT32LE" ],
+			 [ "16 bit (msb first)", "ftduino.I2C_TYPE.INT16BE" ],
+			 [ "32 bit (msb first)", "ftduino.I2C_TYPE.INT32BE" ]
+		       ]
+	}, {
+	    "type": "input_value",
+	    "name": "VALUE"
+	} ],
+	"previousStatement": null,
+	"nextStatement": null,
+	"colour": Code.color_ftduino
+    }, {
+	"type": "i2c_read",
+	"message0": "I²C read A:%1 R:%2 %3 #%4",
+	"args0": [ {
+	    "type": "field_number",
+	    "name": "ADDR",
+	    "value": 42
+	}, {
+	    "type": "field_number",
+	    "name": "REG",
+	    "value": 0
+	}, {
+	    "type": "field_dropdown",
+	    "name": "TYPE",
+	    "options": [ [ "byte",               "ftduino.I2C_TYPE.BYTE"    ],
+			 [ "16 bit (lsb first)", "ftduino.I2C_TYPE.INT16LE" ],
+			 [ "32 bit (lsb first)", "ftduino.I2C_TYPE.INT32LE" ],
+			 [ "16 bit (msb first)", "ftduino.I2C_TYPE.INT16BE" ],
+			 [ "32 bit (msb first)", "ftduino.I2C_TYPE.INT32BE" ]
+		       ]
+	}, {
+	    "type": "field_number",
+	    "name": "NUM",
+	    "value": 1
+	} ],
+	"output": null,
+	"colour": Code.color_ftduino
     }
 ]
 
@@ -722,6 +864,10 @@ function toolbox_install(toolboxText) {
 
 		return [ 'i2cBus' ];
 	    }
+	
+	if(b["type"].startsWith("i2c_"))
+	    Blockly.Blocks[b["type"]]["getDeveloperVars"] =
+	    function() { return ['i2cBus' ]; }
 	
 	if(b["type"].startsWith("lvgl_page"))
 	    Blockly.Blocks[b["type"]]["getDeveloperVars"] =
@@ -1221,12 +1367,14 @@ function toolbox_install(toolboxText) {
     };
 
     Blockly.Python['llvgl_window_set_title'] = function(block) {
+	Blockly.Python.definitions_['from_llvgl_import_all'] = "from llvgl import *";
 	var colour = block.getFieldValue('COLOR');
 	var value_text = Blockly.Python.valueToCode(block, 'TEXT', Blockly.Python.ORDER_ATOMIC);
 	return 'window_set_title(' +value_text+', "'+colour+'")\n';
     };
 
     Blockly.Python['llvgl_window_set_background'] = function(block) {
+	Blockly.Python.definitions_['from_llvgl_import_all'] = "from llvgl import *";
 	var colour = block.getFieldValue('COLOR');
 	return 'window_set_content_color("'+colour+'")\n';
     };
@@ -1262,6 +1410,15 @@ function toolbox_install(toolboxText) {
 	var c = parse_coordinate(value_coordinate);
 	return "widget_set_align("+variable_object+", None, " + dropdown_align + ", " + c[0] + ", " + c[1] + ");\n";
     };
+
+    Blockly.Python['llvgl_align_to'] = function(block) {
+	Blockly.Python.definitions_['from_llvgl_import_all'] = "from llvgl import *";
+	var variable_object = Blockly.Python.variableDB_.getName(block.getFieldValue('OBJECT'), Blockly.Variables.NAME_TYPE);
+	var variable_ref = Blockly.Python.variableDB_.getName(block.getFieldValue('OTHER'), Blockly.Variables.NAME_TYPE);
+	var dropdown_align = block.getFieldValue('ALIGN');
+	var value_coordinate = Blockly.Python.valueToCode(block, 'COORDINATE', Blockly.Python.ORDER_ATOMIC);
+	return "widget_set_align("+variable_object+", "+variable_ref+", " + dropdown_align + ", " + value_coordinate + ");\n";
+    };
     
     Blockly.Python['llvgl_set_size'] = function(block) {
 	Blockly.Python.definitions_['from_llvgl_import_all'] = "from llvgl import *";
@@ -1286,6 +1443,14 @@ function toolbox_install(toolboxText) {
 	Blockly.Python.definitions_["on_" + object + "_" + event_name_map[type]] = code;
 	
 	return "";
+    };
+
+    Blockly.Python['llvgl_on_window_close'] = function(block) {
+	Blockly.Python.definitions_['from_llvgl_import_all'] = "from llvgl import *";
+	var statements = Blockly.Python.statementToCode(block, 'STATEMENTS');
+	var code = "def on_window_close():\n"+getGlobal(block, "    ")+statements + '\n' +
+	    'window_on_close(on_window_close)\n';
+	return code;
     };
 
     Blockly.Python['llvgl_set_text'] = function(block) {
@@ -1394,7 +1559,7 @@ function toolbox_install(toolboxText) {
 	var vars = ftduino_prepare(block)	
 	var dropdown_port = block.getFieldValue('PORT');
 	var dropdown_mode = block.getFieldValue('MODE');
-	var code = "ftduino.i2c_write("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ", "+ dropdown_mode+")\n";
+	var code = "ftduino.i2c_write("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ', ftduino.I2C_TYPE.BYTE, ' + dropdown_mode+")\n";
 	return code;
     };
     
@@ -1402,7 +1567,7 @@ function toolbox_install(toolboxText) {
 	var vars = ftduino_prepare(block)	
 	var dropdown_port = block.getFieldValue('PORT');
 	var value_value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC);
-	var code = "ftduino.i2c_write("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ", "+ value_value+")\n";
+	var code = "ftduino.i2c_write("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ', ftduino.I2C_TYPE.BYTE, ' + value_value+")\n";
 	return code;
     };
 
@@ -1410,17 +1575,37 @@ function toolbox_install(toolboxText) {
 	var vars = ftduino_prepare(block)
 	var dropdown_port = block.getFieldValue('PORT');
 	var dropdown_mode = block.getFieldValue('MODE');
-	var code = "ftduino.i2c_write("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ", "+ dropdown_mode+")\n";
+	var code = "ftduino.i2c_write("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ', ftduino.I2C_TYPE.BYTE, ' + dropdown_mode+")\n";
 	return code;
     };
     
     Blockly.Python['ftduino_input_value'] = function(block) {
 	var vars = ftduino_prepare(block)	
 	var dropdown_port = block.getFieldValue('PORT');
-	var code = "ftduino.i2c_read16("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ")";
+	var code = "ftduino.i2c_read("+ vars["bus"] + ", " + vars["addr"] + ", " + dropdown_port + ", ftduino.I2C_TYPE.INT16LE, 1)";
 	return [code, Blockly.Python.ORDER_NONE];
     };
 
+    Blockly.Python['i2c_write'] = function(block) {
+	var vars = ftduino_prepare(block)
+	var addr = block.getFieldValue('ADDR');
+	var reg = block.getFieldValue('REG');
+	var type = block.getFieldValue('TYPE');
+	var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC);
+	var code = "ftduino.i2c_write("+vars["bus"]+", "+addr+", "+reg+", "+type+", "+value+")\n";
+	return code;
+    };
+    
+    Blockly.Python['i2c_read'] = function(block) {
+	var vars = ftduino_prepare(block)
+	var addr = block.getFieldValue('ADDR');
+	var reg = block.getFieldValue('REG');
+	var type = block.getFieldValue('TYPE');
+	var num = block.getFieldValue('NUM');
+	var code = "ftduino.i2c_read("+vars["bus"]+", "+addr+", "+reg+", "+type+", "+num+")";
+	return [code, Blockly.Python.ORDER_FUNCTION_CALL];
+    };
+    
     /****************************************************************/
     /********************          misc        **********************/
     /****************************************************************/
@@ -1442,8 +1627,45 @@ function toolbox_install(toolboxText) {
 	var code = value_value + " in " + value_list;
 	return [code, Blockly.Python.ORDER_NONE];
     };
+
+    /****************************************************************/
+    /********************          mqtt        **********************/
+    /****************************************************************/
+
+    Blockly.Python['mqtt_connect'] = function(block) {
+	Blockly.Python.definitions_['from mqtt import mqtt'] = "from mqtt import mqtt";
+	var name = block.getFieldValue('NAME');
+	var code = 'mqtt.connect("' + name + '")';
+	return [code, Blockly.Python.ORDER_FUNCTION_CALL];
+    };
     
-    // Pyhton should be indeted by 4 spaces
+    Blockly.Python['mqtt_disconnect'] = function(block) {
+	Blockly.Python.definitions_['from mqtt import mqtt'] = "from mqtt import mqtt";
+	return "mqtt.disconnect()\n";
+    };
+    
+    Blockly.Python['mqtt_publish'] = function(block) {
+	Blockly.Python.definitions_['from mqtt import mqtt'] = "from mqtt import mqtt";
+	var topic = block.getFieldValue('TOPIC');
+	var message = Blockly.Python.valueToCode(block, 'MESSAGE', Blockly.Python.ORDER_ATOMIC);
+	var code = "mqtt.publish('"+topic+"', "+message+")\n";
+	return code;
+    };
+
+    Blockly.Python['mqtt_subscribe'] = function(block) {
+	Blockly.Python.definitions_['from mqtt import mqtt'] = "from mqtt import mqtt";
+	var topic = block.getFieldValue('TOPIC');
+	var message = Blockly.Python.variableDB_.getName(block.getFieldValue('MESSAGE'), Blockly.Variables.NAME_TYPE);
+	var statements = Blockly.Python.statementToCode(block, 'STATEMENTS');
+	var code = "def on_mqtt_" + topic + 
+	    "("+message+"):\n"+getGlobal(block, "    ", message)+statements + '\n';
+
+	Blockly.Python.definitions_["on_mqtt_"+topic] = code;
+	
+	return "mqtt.subscribe('"+topic+"', on_mqtt_"+topic+")\n";
+    };
+    
+    // Python should be indented by 4 spaces
     Blockly.Python.INDENT = "    ";
 }
 
@@ -1473,6 +1695,10 @@ function upload() {
     Code.task_counter = 0;  // restart task count
     var python_code = Blockly.Python.workspaceToCode(Code.workspace);
 
+    // if the workspace contains llvgl as well as mqtt, then close the
+    // connection when window is being closed
+    // TODO ...
+    
     // generate xml to post it with the python code
     var blockly_dom = Blockly.Xml.workspaceToDom(Code.workspace);
     var blockly_code = Blockly.Xml.domToText(blockly_dom);
